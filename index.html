@@ -12,15 +12,37 @@
         var customAndroidScheme = "ppcxa://server/prod";
         var customIOSScheme = "ppcxa://server/prod";
 
-        function redirectToApp(customScheme, appStoreUrl) {
-            var iframe = document.createElement("iframe");
-            iframe.style.display = "none";
-            iframe.src = customScheme;
-            document.body.appendChild(iframe);
+        window.onload = function() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var timeoutId;
 
-            var timeoutId = setTimeout(() => {
-				window.location.href = appStoreUrl;
-            }, 3000); // Adjust delay as needed
+            if (/android/i.test(userAgent)) {
+                // Check if the custom scheme is supported
+                if (isCustomSchemeSupported(customAndroidScheme)) {
+                    window.location.href = customAndroidScheme;
+                } else {
+                    window.open(androidUrl, '_blank');
+                }
+            } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
+                // Check if the custom scheme is supported
+                if (isCustomSchemeSupported(customIOSScheme)) {
+                    window.location.href = customIOSScheme;
+                } else {
+                    window.open(iosUrl, '_blank');
+                }
+            }
+
+            // Function to check if the custom scheme is supported
+            function isCustomSchemeSupported(scheme) {
+                var iframe = document.createElement("iframe");
+                iframe.style.display = "none";
+                iframe.src = scheme + "://";
+                document.body.appendChild(iframe);
+                setTimeout(function() {
+                    document.body.removeChild(iframe);
+                }, 3000); // Adjust timeout as needed
+                return true; // If the custom scheme is supported, the iframe will load successfully
+            }
 
             // Clear the timeout if the page is hidden (app has been opened)
             document.addEventListener('visibilitychange', function() {
@@ -28,21 +50,6 @@
                     clearTimeout(timeoutId);
                 }
             });
-
-            // Listen for the page visibility changes caused by deep linking
-            window.addEventListener("pagehide", function() {
-                clearTimeout(timeoutId);
-            });
-        }
-
-        window.onload = function() {
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-            if (/android/i.test(userAgent)) {
-                redirectToApp(customAndroidScheme, androidUrl);
-            } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-                redirectToApp(customIOSScheme, iosUrl);
-            }
         }
     </script>
 </body>
