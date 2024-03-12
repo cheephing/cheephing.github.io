@@ -17,31 +17,23 @@
             var timeoutId;
 
             if (/android/i.test(userAgent)) {
-                // Check if the custom scheme is supported
-                if (isCustomSchemeSupported(customAndroidScheme)) {
-                    window.location.href = customAndroidScheme;
-                } else {
-                    window.open(androidUrl, '_blank');
-                }
+                // For Android
+                window.location.href = customAndroidScheme;
+                // Redirect to Play Store after 3 seconds
+                timeoutId = setTimeout(() => {
+                    window.location.href = androidUrl;
+                }, 3000);
             } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-                // Check if the custom scheme is supported
-                if (isCustomSchemeSupported(customIOSScheme)) {
-                    window.location.href = customIOSScheme;
-                } else {
-                    window.open(iosUrl, '_blank');
-                }
-            }
+                // For iOS
+                var appLink = document.createElement('a');
+                appLink.href = customIOSScheme;
+                appLink.click();
 
-            // Function to check if the custom scheme is supported
-            function isCustomSchemeSupported(scheme) {
-                var iframe = document.createElement("iframe");
-                iframe.style.display = "none";
-                iframe.src = scheme + "://";
-                document.body.appendChild(iframe);
-                setTimeout(function() {
-                    document.body.removeChild(iframe);
-                }, 3000); // Adjust timeout as needed
-                return true; // If the custom scheme is supported, the iframe will load successfully
+                // Check if app is opened
+                timeoutId = setTimeout(() => {
+                    // If the app isn't opened, redirect to App Store
+                    window.location.href = iosUrl;
+                }, 500); // A short delay before fallback to App Store
             }
 
             // Clear the timeout if the page is hidden (app has been opened)
