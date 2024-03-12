@@ -25,24 +25,21 @@
                 }, 3000);
             } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
                 // For iOS
-                var openedApp = false;
+                var appInstalled = false;
                 var appLink = document.createElement('a');
                 appLink.href = customIOSScheme;
 
-                appLink.onclick = function() {
-                    openedApp = true;
+                appLink.onload = appLink.onerror = function() {
+                    appInstalled = true;
                 };
 
-                // Click the link to attempt to open the app
-                appLink.click();
-
-                // Check if the app is opened within a short time interval
-                timeoutId = setTimeout(() => {
-                    // If the app isn't opened, redirect to App Store
-                    if (!openedApp) {
+                setTimeout(function() {
+                    // If the app is installed, do nothing
+                    if (!appInstalled) {
+                        // If the app is not installed, redirect to the App Store
                         window.location.href = iosUrl;
                     }
-                }, 1000); // Adjust the delay as needed
+                }, 1000); // Wait for the custom scheme to load
             }
 
             // Clear the timeout if the page is hidden (app has been opened)
