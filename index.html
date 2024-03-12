@@ -19,12 +19,12 @@
                 if (/android/i.test(userAgent)) {
 				  window.location.href = customAndroidScheme;
 				  timeoutId = setTimeout(() => {
-					window.open(androidUrl, '_blank');
+					window.location.href = androidUrl;
 				  }, 3000); // Adjust delay as needed
 				} else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-				  window.open(customIOSScheme, '_blank');
+				  window.location.href = customIOSScheme;
 				  timeoutId = setTimeout(() => {
-					window.open(iosUrl, '_blank');
+					window.location.href = iosUrl;
 				  }, 3000); // Adjust delay as needed
 				}
 
