@@ -6,29 +6,39 @@
     <title>Redirect Based on User Phone OS</title>
 </head>
 <body>
+    <a id="open-app" href="#">Open App</a>
+
     <script>
         var androidUrl = "https://play.google.com/store/apps/details?id=com.pacificprimecxa.android";
         var iosUrl = "https://apps.apple.com/us/app/pacific-prime-cxa-benefits/id6462017741";
         var customAndroidScheme = "ppcxa://server/prod";
         var customIOSScheme = "ppcxa://server/prod";
 
-        window.onload = function() {
+        document.getElementById('open-app').addEventListener('click', function(e) {
+            e.preventDefault();
+
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var timeoutId;
 
             if (/android/i.test(userAgent)) {
-                if (confirm('Do you want to open the app?')) {
-                    window.location.href = customAndroidScheme;
-                } else {
+                window.location.href = customAndroidScheme;
+                timeoutId = setTimeout(() => {
                     window.location.href = androidUrl;
-                }
+                }, 3000); // Adjust delay as needed
             } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-                if (confirm('Do you want to open the app?')) {
-                    window.location.href = customIOSScheme;
-                } else {
+                window.location.href = customIOSScheme;
+                timeoutId = setTimeout(() => {
                     window.location.href = iosUrl;
-                }
+                }, 3000); // Adjust delay as needed
             }
-        }
+
+            // Clear the timeout if the page is hidden (app has been opened)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    clearTimeout(timeoutId);
+                }
+            });
+        });
     </script>
 </body>
 </html>
