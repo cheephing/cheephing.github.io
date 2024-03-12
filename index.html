@@ -19,7 +19,7 @@
             document.body.appendChild(iframe);
 
             var timeoutId = setTimeout(() => {
-                window.open(appStoreUrl, '_blank');
+				window.location.href = appStoreUrl;
             }, 3000); // Adjust delay as needed
 
             // Clear the timeout if the page is hidden (app has been opened)
