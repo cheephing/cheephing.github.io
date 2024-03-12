@@ -19,21 +19,30 @@
             if (/android/i.test(userAgent)) {
                 // For Android
                 window.location.href = customAndroidScheme;
-                // Redirect to Play Store after 3 seconds
+                // Redirect to Play Store after a delay
                 timeoutId = setTimeout(() => {
                     window.location.href = androidUrl;
                 }, 3000);
             } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
                 // For iOS
+                var openedApp = false;
                 var appLink = document.createElement('a');
                 appLink.href = customIOSScheme;
+
+                appLink.onclick = function() {
+                    openedApp = true;
+                };
+
+                // Click the link to attempt to open the app
                 appLink.click();
 
-                // Check if app is opened
+                // Check if the app is opened within a short time interval
                 timeoutId = setTimeout(() => {
                     // If the app isn't opened, redirect to App Store
-                    window.location.href = iosUrl;
-                }, 500); // A short delay before fallback to App Store
+                    if (!openedApp) {
+                        window.location.href = iosUrl;
+                    }
+                }, 1000); // Adjust the delay as needed
             }
 
             // Clear the timeout if the page is hidden (app has been opened)
