@@ -16,31 +16,17 @@
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
             var timeoutId;
 
-            if (/android/i.test(userAgent)) {
-                // For Android
-                window.location.href = customAndroidScheme;
-                // Redirect to Play Store after a delay
-                timeoutId = setTimeout(() => {
-                    window.location.href = androidUrl;
-                }, 3000);
-            } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-                // For iOS
-                var appInstalled = false;
-                var appLink = document.createElement('a');
-                appLink.href = customIOSScheme;
-
-                appLink.onload = appLink.onerror = function() {
-                    appInstalled = true;
-                };
-
-                setTimeout(function() {
-                    // If the app is installed, do nothing
-                    if (!appInstalled) {
-                        // If the app is not installed, redirect to the App Store
-                        window.location.href = iosUrl;
-                    }
-                }, 1000); // Wait for the custom scheme to load
-            }
+                if (/android/i.test(userAgent)) {
+				  window.location.href = customAndroidScheme;
+				  timeoutId = setTimeout(() => {
+					window.open(androidUrl, '_blank');
+				  }, 3000); // Adjust delay as needed
+				} else if (/iPad|iPhone|iPod/i.test(userAgent)) {
+				  window.open(customIOSScheme, '_blank');
+				  timeoutId = setTimeout(() => {
+					window.open(iosUrl, '_blank');
+				  }, 3000); // Adjust delay as needed
+				}
 
             // Clear the timeout if the page is hidden (app has been opened)
             document.addEventListener('visibilitychange', function() {
