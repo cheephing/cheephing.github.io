@@ -12,21 +12,15 @@
         var customAndroidScheme = "ppcxa://server/prod";
         var customIOSScheme = "ppcxa://server/prod";
 
-        window.onload = function() {
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            var timeoutId;
+        function redirectToApp(customScheme, appStoreUrl) {
+            var iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = customScheme;
+            document.body.appendChild(iframe);
 
-                if (/android/i.test(userAgent)) {
-				  window.location.href = customAndroidScheme;
-				  timeoutId = setTimeout(() => {
-					window.open(androidUrl, '_blank');
-				  }, 3000); // Adjust delay as needed
-				} else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-				  window.location.href = customIOSScheme;
-				  timeoutId = setTimeout(() => {
-					window.open(iosUrl, '_blank');
-				  }, 3000); // Adjust delay as needed
-				}
+            var timeoutId = setTimeout(() => {
+                window.open(appStoreUrl, '_blank');
+            }, 3000); // Adjust delay as needed
 
             // Clear the timeout if the page is hidden (app has been opened)
             document.addEventListener('visibilitychange', function() {
@@ -34,6 +28,21 @@
                     clearTimeout(timeoutId);
                 }
             });
+
+            // Listen for the page visibility changes caused by deep linking
+            window.addEventListener("pagehide", function() {
+                clearTimeout(timeoutId);
+            });
+        }
+
+        window.onload = function() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            if (/android/i.test(userAgent)) {
+                redirectToApp(customAndroidScheme, androidUrl);
+            } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
+                redirectToApp(customIOSScheme, iosUrl);
+            }
         }
     </script>
 </body>
