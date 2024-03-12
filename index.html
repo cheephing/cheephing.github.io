@@ -9,24 +9,24 @@
     <script>
         var androidUrl = "https://play.google.com/store/apps/details?id=com.pacificprimecxa.android";
         var iosUrl = "https://apps.apple.com/us/app/pacific-prime-cxa-benefits/id6462017741";
-        var customAndroidScheme = "ppcxa://server/prod";
-        var customIOSScheme = "ppcxa://server/prod";
+        var customScheme = "ppcxa://server/prod";
 
         window.onload = function() {
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
             var timeoutId;
+            let iframe;
 
-                if (/android/i.test(userAgent)) {
-				  window.location.href = customAndroidScheme;
-				  timeoutId = setTimeout(() => {
-					window.open(androidUrl, '_blank');
-				  }, 3000); // Adjust delay as needed
-				} else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-				  window.location.href = customIOSScheme;
-				  timeoutId = setTimeout(() => {
-					window.open(iosUrl, '_blank');
-				  }, 3000); // Adjust delay as needed
-				}
+			if (/android/i.test(userAgent) || /iPad|iPhone|iPod/i.test(userAgent)) {
+			  const appUrl = /android/i.test(userAgent) ? androidUrl : iosUrl;
+			  iframe = document.createElement('iframe');
+			  iframe.style.display = 'none';
+			  iframe.src = customScheme;
+			  document.body.appendChild(iframe);
+			  timeoutId = setTimeout(() => {
+				window.location.href = appUrl;
+			  }, 3000); // Adjust delay as needed
+			}
+
 
             // Clear the timeout if the page is hidden (app has been opened)
             document.addEventListener('visibilitychange', function() {
@@ -34,6 +34,10 @@
                     clearTimeout(timeoutId);
                 }
             });
+			
+			 if (iframe) {
+        document.body.removeChild(iframe);
+      }
         }
     </script>
 </body>
