@@ -6,39 +6,7 @@
     <title>Redirect Based on User Phone OS</title>
 </head>
 <body>
-    <a id="open-app" href="#">Open App</a>
-
-    <script>
-        var androidUrl = "https://play.google.com/store/apps/details?id=com.pacificprimecxa.android";
-        var iosUrl = "https://apps.apple.com/us/app/pacific-prime-cxa-benefits/id6462017741";
-        var customAndroidScheme = "ppcxa://server/prod";
-        var customIOSScheme = "ppcxa://server/prod";
-
-        document.getElementById('open-app').addEventListener('click', function(e) {
-            e.preventDefault();
-
-            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            var timeoutId;
-
-            if (/android/i.test(userAgent)) {
-                window.location.href = customAndroidScheme;
-                timeoutId = setTimeout(() => {
-                    window.location.href = androidUrl;
-                }, 3000); // Adjust delay as needed
-            } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
-                window.location.href = customIOSScheme;
-                timeoutId = setTimeout(() => {
-                    window.location.href = iosUrl;
-                }, 3000); // Adjust delay as needed
-            }
-
-            // Clear the timeout if the page is hidden (app has been opened)
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) {
-                    clearTimeout(timeoutId);
-                }
-            });
-        });
-    </script>
+    <input accept="application/pdf, image/*, image/heif, image/heic, .jfif, application/*" type="file" autocomplete="off" style="position: absolute; inset: 0px; opacity: 1e-05; pointer-events: none;">
+     
 </body>
 </html>
